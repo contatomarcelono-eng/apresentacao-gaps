@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GAPS de Vendas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .presentation {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  /* ── Slide 1 — Abertura ── */
+  .slide-1 {
+    background: #fff;
+    text-align: center;
+  }
+
+  .slide-1 .tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: #f59e0b;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+
+  .slide-1 .title-main {
+    font-size: clamp(88px, 15vw, 168px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: #1d1d1f;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.5s forwards;
+  }
+
+  .slide-1 .title-sub {
+    font-size: clamp(26px, 3.5vw, 48px);
+    font-weight: 300;
+    color: #f59e0b;
+    letter-spacing: 0.06em;
+    margin-top: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.7s forwards;
+  }
+
+  .slide-1 .line {
+    width: 48px;
+    height: 3px;
+    background: #f59e0b;
+    border-radius: 2px;
+    margin: 36px auto 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.9s forwards;
+  }
+
+  .slide-1 .date {
+    position: absolute;
+    bottom: 44px;
+    font-size: 11px;
+    color: #aeaeb2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 1.1s forwards;
+  }
+
+  /* ── Slides de Gap ── */
+  .slide-gap {
+    background: #f5f5f7;
+    align-items: flex-start;
+    padding: 72px 10%;
+  }
+
+  .gap-number {
+    font-size: clamp(110px, 17vw, 200px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: #f59e0b;
+    opacity: 0.1;
+    position: absolute;
+    right: 7%;
+    top: 50%;
+    transform: translateY(-50%);
+    user-select: none;
+  }
+
+  .gap-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: #f59e0b;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .gap-title {
+    font-size: clamp(34px, 4.5vw, 62px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: #1d1d1f;
+    max-width: 640px;
+    margin-bottom: 36px;
+  }
+
+  .gap-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 580px;
+  }
+
+  .gap-block {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 18px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .gap-block.problem { border-left: 3px solid #ef4444; }
+  .gap-block.solution { border-left: 3px solid #f59e0b; }
+  .gap-block.info { border-left: 3px solid #3b82f6; }
+
+  .gap-block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .gap-block.problem .gap-block-label { color: #ef4444; }
+  .gap-block.solution .gap-block-label { color: #f59e0b; }
+  .gap-block.info .gap-block-label { color: #3b82f6; }
+
+  .gap-block p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #6e6e73;
+  }
+
+  .gap-block strong {
+    color: #1d1d1f;
+    font-weight: 600;
+  }
+
+  /* ── Slide encerramento ── */
+  .slide-end {
+    background: #fff;
+    text-align: center;
+  }
+
+  .slide-end .end-icon {
+    font-size: 44px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+
+  .slide-end .end-title {
+    font-size: clamp(30px, 4.5vw, 58px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #1d1d1f;
+    max-width: 680px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.5s forwards;
+  }
+
+  .slide-end .end-title span { color: #f59e0b; }
+
+  .slide-end .end-sub {
+    font-size: 17px;
+    color: #6e6e73;
+    margin-top: 22px;
+    max-width: 460px;
+    line-height: 1.65;
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.7s forwards;
+  }
+
+  .slide-end .end-line {
+    width: 36px;
+    height: 3px;
+    background: #f59e0b;
+    border-radius: 2px;
+    margin: 32px auto 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.9s forwards;
+  }
+
+  /* ── Navegação ── */
+  .nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 100;
+  }
+
+  .nav-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: #fff;
+    color: #1d1d1f;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .nav-btn:hover { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .nav-btn:disabled { opacity: 0.25; cursor: default; box-shadow: none; }
+  .nav-btn:disabled:hover { background: #fff; border-color: rgba(0,0,0,0.12); color: #1d1d1f; }
+
+  .nav-dots { display: flex; gap: 7px; align-items: center; }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d1d1d6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: #f59e0b;
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  .counter {
+    position: fixed;
+    top: 30px;
+    right: 36px;
+    font-size: 12px;
+    color: #aeaeb2;
+    letter-spacing: 0.08em;
+    z-index: 100;
+  }
+
+  .hint {
+    position: fixed;
+    bottom: 38px;
+    right: 36px;
+    font-size: 11px;
+    color: #d1d1d6;
+    letter-spacing: 0.05em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="presentation">
+
+  <!-- Slide 1: Abertura -->
+  <div class="slide slide-1 active" id="slide-0">
+    <div class="tag">Alinhamento Semanal · Equipe de Vendas</div>
+    <div class="title-main">GAPS</div>
+    <div class="title-sub">de Vendas</div>
+    <div class="line"></div>
+    <div class="date">Abril 2026</div>
+  </div>
+
+  <!-- Slide 2: Gap 1 -->
+  <div class="slide slide-gap" id="slide-1">
+    <div class="gap-number">01</div>
+    <div class="gap-label">Gap 01 de 03</div>
+    <div class="gap-title">Orçamento<br>Digital no Tablet</div>
+    <div class="gap-content">
+      <div class="gap-block problem">
+        <div class="gap-block-label">Problema</div>
+        <p>Durante o atendimento, os consultores <strong>anotam produtos na agenda</strong> para montar o orçamento depois — um processo lento que prejudica a experiência do cliente.</p>
+      </div>
+      <div class="gap-block solution">
+        <div class="gap-block-label">Solução</div>
+        <p>O cliente chega, <strong>seus dados são cadastrados no tablet</strong> e os produtos de interesse são adicionados ao orçamento em tempo real. O resultado: uma proposta impressa que o consultor leva direto ao gerente para negociar.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3: Gap 2 -->
+  <div class="slide slide-gap" id="slide-2">
+    <div class="gap-number">02</div>
+    <div class="gap-label">Gap 02 de 03</div>
+    <div class="gap-title">Controle de<br>Descontos</div>
+    <div class="gap-content">
+      <div class="gap-block problem">
+        <div class="gap-block-label">Problema</div>
+        <p>Descontos acima do permitido eram concedidos sem critério, <strong>comprometendo a margem</strong> da loja e criando inconsistências nas negociações.</p>
+      </div>
+      <div class="gap-block solution">
+        <div class="gap-block-label">Solução</div>
+        <p>O sistema agora <strong>bloqueia automaticamente descontos acima do limite</strong>. Para liberar, é necessária uma senha de autorização — garantindo que cada exceção seja analisada antes de ser aprovada.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Gap 3 -->
+  <div class="slide slide-gap" id="slide-3">
+    <div class="gap-number">03</div>
+    <div class="gap-label">Gap 03 de 03</div>
+    <div class="gap-title">Visibilidade<br>nos Descontos</div>
+    <div class="gap-content">
+      <div class="gap-block problem">
+        <div class="gap-block-label">Situação</div>
+        <p>Não havia clareza sobre o <strong>volume de descontos praticados</strong> no dia a dia — o que dificultava conversas de desenvolvimento com a equipe.</p>
+      </div>
+      <div class="gap-block info">
+        <div class="gap-block-label">O que estamos fazendo</div>
+        <p>Passamos a <strong>registrar e acompanhar os descontos concedidos</strong> em cada venda. Não para criar pressão, mas para ter dados reais que nos ajudem a <strong>apoiar melhor cada consultor</strong> e tomar decisões mais inteligentes juntos.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Encerramento -->
+  <div class="slide slide-end" id="slide-4">
+    <div class="end-icon">✦</div>
+    <div class="end-title">Processos melhores.<br><span>Resultados maiores.</span></div>
+    <div class="end-sub">Cada ajuste que fazemos libera tempo, protege a margem e coloca o time em condições melhores para atender e fechar mais vendas.</div>
+    <div class="end-line"></div>
+  </div>
+
+</div>
+
+<div class="counter" id="counter">1 / 5</div>
+
+<div class="nav">
+  <button class="nav-btn" id="prev" onclick="changeSlide(-1)" disabled>←</button>
+  <div class="nav-dots" id="dots"></div>
+  <button class="nav-btn" id="next" onclick="changeSlide(1)">→</button>
+</div>
+
+<div class="hint">← → para navegar</div>
+
+<script>
+  const total = 5
+  let current = 0
+
+  const dotsContainer = document.getElementById('dots')
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div')
+    dot.className = 'dot' + (i === 0 ? ' active' : '')
+    dot.onclick = () => goTo(i)
+    dotsContainer.appendChild(dot)
+  }
+
+  function goTo(index) {
+    document.getElementById('slide-' + current).classList.remove('active')
+    dotsContainer.children[current].classList.remove('active')
+    current = index
+    document.getElementById('slide-' + current).classList.add('active')
+    dotsContainer.children[current].classList.add('active')
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total
+    document.getElementById('prev').disabled = current === 0
+    document.getElementById('next').disabled = current === total - 1
+  }
+
+  function changeSlide(dir) {
+    const next = current + dir
+    if (next >= 0 && next < total) goTo(next)
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1)
+    if (e.key === 'ArrowLeft') changeSlide(-1)
+  })
+</script>
+
+</body>
+</html>
